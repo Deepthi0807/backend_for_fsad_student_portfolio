@@ -4,7 +4,6 @@ import com.portfolio.backend.dto.FeedbackRequest;
 import com.portfolio.backend.dto.ProjectResponse;
 import com.portfolio.backend.dto.StudentSummary;
 import com.portfolio.backend.service.AdminService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +13,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
-@RequiredArgsConstructor
 public class AdminController {
 	   private final AdminService adminService;
 	   
