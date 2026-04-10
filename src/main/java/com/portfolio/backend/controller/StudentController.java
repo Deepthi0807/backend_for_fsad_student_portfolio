@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import java.util.Map;
 
 import java.util.Base64;
 import java.util.List;
@@ -58,5 +62,27 @@ public class StudentController {
         } catch (Exception e) {
             throw new RuntimeException("Invalid or missing token");
         }
+    }
+ // PUT /api/student/projects/{id}
+    @PutMapping("/projects/{id}")
+    public ResponseEntity<ProjectResponse> updateProject(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable Long id,
+            @RequestBody CreateProjectRequest request) {
+
+        Long userId = extractUserIdFromToken(authHeader);
+        ProjectResponse updated = studentService.updateProject(userId, id, request);
+        return ResponseEntity.ok(updated);
+    }
+
+    // DELETE /api/student/projects/{id}
+    @DeleteMapping("/projects/{id}")
+    public ResponseEntity<?> deleteProject(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable Long id) {
+
+        Long userId = extractUserIdFromToken(authHeader);
+        studentService.deleteProject(userId, id);
+        return ResponseEntity.ok(Map.of("message", "Project deleted"));
     }
 }
