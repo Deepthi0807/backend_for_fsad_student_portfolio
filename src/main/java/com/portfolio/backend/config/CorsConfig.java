@@ -1,35 +1,43 @@
 package com.portfolio.backend.config;
 
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
 
-@Component
-public class CorsConfig implements Filter {
+import java.util.List;
+public class CorsConfig  {
 
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-            throws java.io.IOException, jakarta.servlet.ServletException {
+	 @Bean
+	    public CorsConfigurationSource corsConfigurationSource() {
+	        CorsConfiguration configuration = new CorsConfiguration();
 
-        HttpServletResponse response = (HttpServletResponse) res;
-        HttpServletRequest request = (HttpServletRequest) req;
+	        // ✅ Allow your frontend URLs
+	        configuration.setAllowedOrigins(List.of(
+	                "https://student-portfolio-production.up.railway.app",
+	                "https://fsad-student-portfolio.vercel.app",
+	                "http://localhost:5173"
+	        ));
 
-        response.setHeader("Access-Control-Allow-Origin", 
-            "https://student-portfolio-production.up.railway.app");
-        response.setHeader("Access-Control-Allow-Methods", 
-            "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "*");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
+	        // ✅ Allow all HTTP methods
+	        configuration.setAllowedMethods(List.of(
+	                "GET", "POST", "PUT", "DELETE", "OPTIONS"
+	        ));
 
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return;
-        }
+	        // ✅ Allow all headers
+	        configuration.setAllowedHeaders(List.of("*"));
 
-        chain.doFilter(req, res);
-    }
+	        // ✅ Allow credentials (JWT / cookies)
+	        configuration.setAllowCredentials(true);
+
+	        // ✅ Cache preflight response
+	        configuration.setMaxAge(3600L);
+
+	        // Apply this config to all endpoints
+	        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	        source.registerCorsConfiguration("/**", configuration);
+
+	        return source;
+	    }
 }
