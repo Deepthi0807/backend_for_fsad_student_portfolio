@@ -1,24 +1,22 @@
 package com.portfolio.backend.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
-	 @Value("${app.cors.allowed-origins}")
-	    private String allowedOrigins;
-
-	    @Override
+	 @Override
 	    public void addCorsMappings(CorsRegistry registry) {
 	        registry.addMapping("/**")
-	                .allowedOriginPatterns("*")
-	                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
+	                .allowedOrigins(
+	                        "https://student-portfolio-production.up.railway.app",
+	                        "https://fsad-student-portfolio.vercel.app",
+	                        "http://localhost:5173"
+	                )
+	                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 	                .allowedHeaders("*")
-	                .exposedHeaders("Authorization")
-	                .allowCredentials(false)
-	                .maxAge(3600);
+	                .allowCredentials(true);
 	    }
-
-}
+	}
