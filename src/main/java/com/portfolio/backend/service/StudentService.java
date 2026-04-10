@@ -59,4 +59,33 @@ public class StudentService {
                 project.getReviewed()
         );
     }
+    public ProjectResponse updateProject(Long userId, Long projectId, CreateProjectRequest request) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        // Make sure this project belongs to this student
+        if (!project.getStudent().getId().equals(userId)) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        project.setTitle(request.getTitle());
+        project.setDescription(request.getDescription());
+        project.setMilestone(request.getMilestone());
+        project.setProgress(request.getProgress());
+        project.setMedia(request.getMedia());
+
+        return toResponse(projectRepository.save(project));
+    }
+
+    public void deleteProject(Long userId, Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        // Make sure this project belongs to this student
+        if (!project.getStudent().getId().equals(userId)) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        projectRepository.deleteById(projectId);
+    }
 }
