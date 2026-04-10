@@ -1,24 +1,28 @@
 package com.portfolio.backend.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
-public class CorsConfig  {
+
+@Configuration
+public class CorsConfig {
+
+    @Value("${app.cors.allowed-origins}")
+    private String allowedOriginsRaw;
 
 	 @Bean
 	    public CorsConfigurationSource corsConfigurationSource() {
 	        CorsConfiguration configuration = new CorsConfiguration();
 
-	        // ✅ Allow your frontend URLs
-	        configuration.setAllowedOrigins(List.of(
-	                "https://student-portfolio-production.up.railway.app",
-	                "https://fsad-student-portfolio.vercel.app",
-	                "http://localhost:5173"
-	        ));
+	        // ✅ Allow frontend URLs sourced from APP_CORS_ALLOWED_ORIGINS env variable
+	        List<String> allowedOrigins = Arrays.asList(allowedOriginsRaw.split(","));
+	        configuration.setAllowedOrigins(allowedOrigins);
 
 	        // ✅ Allow all HTTP methods
 	        configuration.setAllowedMethods(List.of(
