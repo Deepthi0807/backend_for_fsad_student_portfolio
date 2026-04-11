@@ -1,47 +1,38 @@
 package com.portfolio.backend.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-public class CorsConfig {
+public class CorsConfig implements WebMvcConfigurer {
 
-    @Value("${app.cors.allowed-origins}")
-    private String allowedOriginsRaw;
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
-	 @Bean
-	    public CorsConfigurationSource corsConfigurationSource() {
-	        CorsConfiguration configuration = new CorsConfiguration();
+        // Allow all origins
+        configuration.setAllowedOriginPatterns(List.of("*"));
 
-	        // ✅ Allow frontend URLs sourced from APP_CORS_ALLOWED_ORIGINS env variable
-	        List<String> allowedOrigins = Arrays.asList(allowedOriginsRaw.split(","));
-	        configuration.setAllowedOrigins(allowedOrigins);
+        // Allow all methods
+        configuration.setAllowedMethods(Arrays.asList(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
+        ));
 
-	        // ✅ Allow all HTTP methods
-	        configuration.setAllowedMethods(List.of(
-	                "GET", "POST", "PUT", "DELETE", "OPTIONS"
-	        ));
+        // Allow all headers
+        configuration.setAllowedHeaders(List.of("*"));
 
-	        // ✅ Allow all headers
-	        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(false);
+        configuration.setMaxAge(3600L);
 
-	        // ✅ Allow credentials (JWT / cookies)
-	        configuration.setAllowCredentials(true);
-
-	        // ✅ Cache preflight response
-	        configuration.setMaxAge(3600L);
-
-	        // Apply this config to all endpoints
-	        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	        source.registerCorsConfiguration("/**", configuration);
-
-	        return source;
-	    }
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }

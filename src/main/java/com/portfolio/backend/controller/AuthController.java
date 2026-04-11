@@ -1,4 +1,5 @@
 package com.portfolio.backend.controller;
+
 import com.portfolio.backend.dto.LoginRequest;
 import com.portfolio.backend.dto.LoginResponse;
 import com.portfolio.backend.dto.RegisterRequest;
@@ -14,7 +15,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-	private final AuthService authService;
+
+    private final AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;
@@ -28,6 +30,18 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.status(401)
+                    .body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    // POST /api/auth/register
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        try {
+            LoginResponse response = authService.register(request);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400)
                     .body(Map.of("message", e.getMessage()));
         }
     }
