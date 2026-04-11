@@ -1,5 +1,4 @@
 package com.portfolio.backend.controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import com.portfolio.backend.dto.LoginRequest;
 import com.portfolio.backend.dto.LoginResponse;
 import com.portfolio.backend.dto.RegisterRequest;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-@CrossOrigin(origins = "https://student-portfolio-production.up.railway.app")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
